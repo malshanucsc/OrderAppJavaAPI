@@ -9,8 +9,10 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,35 +24,34 @@ public class OrderController{
     @Autowired
     private OrderRepository repository;
 
+
+    //retreiving all orders
     @GetMapping("/orders")
     public List<OrderData> index(){
 
         List<OrderData> orderslist = repository.findAll();
-
-
-
         return (orderslist);
     }
 
-    @GetMapping("/orders/getbyname")
+    //retreiving all orders by order name
+    @GetMapping("/orders/getbyordername")
     @ResponseBody
-    public OrderData findByName(@RequestParam String orderName){
-        System.out.println(orderName);
+    public List<OrderData> findByOrderName(@RequestParam String OrderName){
 
-        OrderData orderbyname = repository.findByOrderName(orderName);
-        System.out.print(orderbyname);
-
-        return (orderbyname);
+        List<OrderData> orderListByOrderName = repository.findByOrderName(OrderName);
+        return (orderListByOrderName);
     }
 
-    @GetMapping("/orders/customer/{customername}")
-    public List<OrderData> findByCustomerName(@PathVariable String customername){
+    //retreiving all orders by customer name
+    @GetMapping("/orders/getbycustomername")
+    @ResponseBody
+    public List<OrderData> findByCustomerName(@RequestParam String CustomerName){
 
-        List<OrderData> orderbyname = repository.findByCustomerName(customername);
-
-        return (orderbyname);
+        List<OrderData> orderListByCustomerName = repository.findByCustomerName(CustomerName);
+        return (orderListByCustomerName);
     }
 
+    //create order
     @PostMapping(value="orders/create")
     public void createOrder(@RequestBody String jsonString){
         JSONObject jsonObject = new JSONObject();
@@ -70,11 +71,9 @@ public class OrderController{
             String customerName = jsonObject.get("customerName").toString();
             double grandTotal = Double.parseDouble(jsonObject.get("grandTotal").toString());
             String address = jsonObject.get("address").toString();
-//            Map<List<Item>,Object> itemList= objectMapper.convertValue(jsonObject.get("itemsList"),Map.class);
-//            List<Item> itemList= jsonObject.get("itemList");
+
 
             ArrayList<Item> itemList = new Gson().fromJson(jsonObject.get("itemsList").toString(), new TypeToken<ArrayList<Item>>(){}.getType());
-
 
             newOrder = new OrderData(orderName, customerName, grandTotal, address, itemList);
             repository.save(newOrder);
@@ -90,50 +89,92 @@ public class OrderController{
     }
 
 
+    @DeleteMapping(value="/orders", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String delete(@RequestParam String orderId){
+
+        JSONObject jsonResponseObject = new JSONObject();
+
+        if(repository.exists(orderId)){
+            repository.delete(orderId);
+
+            if(repository.exists(orderId)){
+                try {
+                    jsonResponseObject = new JSONObject("{'message':'order_deleted_successfully'}");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }else {
+                try {
+                    jsonResponseObject = new JSONObject("{'message':'order_deletion_failed'}");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }else {
+
+            try {
+                jsonResponseObject = new JSONObject("{'message':'order_does_not_exist'}");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return jsonResponseObject.toString();
 
 
-//    @GetMapping("/order")
-//    public List<Order> index(){
-//        return orderMockedData.fetchBlogs();
-//    }
-
-/*
-    @GetMapping("/order/{id}")
-    public Order show(@PathVariable String id){
-        int blogId = Integer.parseInt(id);
-        return orderMockedData.getBlogById(blogId);
     }
 
+    //updating the object
+    @PutMapping(value="/orders", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String update(@RequestBody String jsonInputSring){
 
-    @PostMapping("/order/search")
-    public List<Order> search(@RequestBody Map<String, String> body){
-        String searchTerm = body.get("text");
-        return orderMockedData.searchBlogs(searchTerm);
+        JSONObject jsonInputObject = new JSONObject();
+        ObjectMapper objectMapper = new ObjectMapper();
+        OrderData updatingOrder = new OrderData();
+
+
+
+        try {
+            jsonInputObject = new JSONObject(jsonInputSring);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject jsonResponseObject = new JSONObject();
+
+        try {
+            if(repository.exists(jsonInputObject.get("id").toString())){
+                try {
+                    updatingOrder = objectMapper.readValue(jsonInputSring, OrderData.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println(repository.save(updatingOrder));
+
+
+
+
+            }else {
+
+                try {
+                    jsonResponseObject = new JSONObject("{'message':'order_does_not_exist'}");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonResponseObject.toString();
+
+
     }
 
-    @PostMapping("/order")
-    public Order create(@RequestBody Map<String, String> body){
-        int id = Integer.parseInt(body.get("id"));
-        String title = body.get("title");
-        String content = body.get("content");
-        return orderMockedData.createBlog(id, title, content);
-    }
-
-    @PutMapping("/order/{id}")
-    public Order update(@PathVariable String id, @RequestBody Map<String, String> body){
-        int blogId = Integer.parseInt(id);
-        String title = body.get("title");
-        String content = body.get("content");
-        return orderMockedData.updateBlog(blogId, title, content);
-    }
-
-    @DeleteMapping("order/{id}")
-    public boolean delete(@PathVariable String id){
-        int blogId = Integer.parseInt(id);
-        return orderMockedData.delete(blogId);
-    }
-
-
-*/
 
 }
