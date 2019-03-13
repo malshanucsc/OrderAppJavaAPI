@@ -1,6 +1,6 @@
-package Order_package;
+package com.sysco.order;
 
-import Order_package.Interfaces.OrderRepository;
+import com.sysco.order.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

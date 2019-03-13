@@ -1,27 +1,29 @@
-package Order_package.Models;
+package com.sysco.order.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public class User {
-
+public class TempUser {
     @Id
-    public String id;
+    private String id;
 
 
     private String userName;
     private String password;
 
-    public User(){
+    public TempUser(){
         this.userName = "";
         this.password = "";
 
     }
 
-//    public User(String userName, String password) {
-//        this.userName = userName;
-//        this.password = password;
-//    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUserName() {
         return userName;
@@ -32,21 +34,18 @@ public class User {
     }
 
     public String getpassword() {
+
         return password;
     }
 
     public void setpassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.password  = passwordEncoder.encode(password);
+
+        this.password  = password;
     }
 
     public boolean matchPassword(String inputPassword){
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-        return(passwordEncoder.matches(inputPassword,this.password));
-
+        return (this.password==inputPassword);
     }
-
     @Override
     public String toString() {
         return String.format("{id:%s, userName:%s, password:%s}", id, userName, password);
