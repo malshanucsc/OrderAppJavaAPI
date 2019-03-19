@@ -1,86 +1,45 @@
 package com.sysco.order.controller;
 
-import com.sysco.order.repository.OrderRepository;
 import com.sysco.order.model.OrderData;
+import com.sysco.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 public class OrderController{
 
     @Autowired
-    private OrderRepository repository;
-
+    private OrderService orderService;
 
     //retreiving all orders
     @GetMapping("/orders")
     public ResponseEntity orders(){
-        //need to
-        List<OrderData> allOrders = repository.findAll();
-        if(allOrders!=null) {
-
-            return ResponseEntity.status(200).body(allOrders);
-
-        }else{
-            return  ResponseEntity.status(404).body("no_orders_found");
-
-        }
-
+        return orderService.getAllOrders();
     }
 
     //retrieve single order
-    @GetMapping("/order/{id}")
+    @GetMapping("/orders/{id}")
     public ResponseEntity order(@PathVariable String id){
-
-        OrderData singleOrder = repository.findById(id);
-        if(singleOrder!=null){
-            return ResponseEntity.status(200).body(singleOrder);
-        }else{
-            return  ResponseEntity.status(404).body("order_not_found");
-        }
-
+        return orderService.getSingleOrder(id);
     }
 
     //create order
-    @PostMapping("/order")
+    @PostMapping("/orders")
     public ResponseEntity createOrder(@RequestBody OrderData newOrder){
-
-
-        return ResponseEntity.status(201).body(repository.save(newOrder));
-
+        return orderService.createOrder(newOrder);
     }
 
     //deleting an order
-    @DeleteMapping(value="/order/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @DeleteMapping(value="/orders/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity delete(@PathVariable String id){
-
-
-
-        if(repository.findById(id)!=null){
-            repository.delete(id);
-            return ResponseEntity.status(200).build();
-        }else{
-            return ResponseEntity.status(404).build();
-        }
+        return orderService.deleteOrder(id);
     }
 
     //updating the order object
-    @PutMapping(value="/order", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(value="/orders", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity update(@RequestBody OrderData currentOrder){
-
-        if (repository.findById(currentOrder.getId())!=null){
-            repository.save(currentOrder);
-            return ResponseEntity.status(200).body(currentOrder);
-
-        }else{
-            return ResponseEntity.status(404).build();
-        }
-
+        return orderService.updateOrder(currentOrder);
     }
-
-
 }

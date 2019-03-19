@@ -1,7 +1,5 @@
 package com.sysco.order;
 
-import com.sysco.order.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MainApplicationClass {
 
-    @Autowired
-    private OrderRepository repository;
+    //@Autowired
+    //private OrderRepository repository;
 
 
     public static void main(String[] args) {

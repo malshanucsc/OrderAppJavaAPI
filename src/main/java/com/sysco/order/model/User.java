@@ -44,6 +44,9 @@ public class User {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.password  = passwordEncoder.encode(password);
     }
+    public void setEncodedPassword(String encodedPassword){
+        this.password = encodedPassword;
+    }
 
     public boolean matchPassword(String inputPassword){
 

@@ -2,32 +2,42 @@ package com.sysco.order.model;
 
 import lombok.Getter;
 import lombok.Setter;
+
 //getters and setters are automatically generated at compile time using lombok
 @Getter
 @Setter
 public class Item {
 
+
     private Integer id;
     private String itemName;
     private double quantity;
+    private String unit;
     private double unitValue;
-    private double subTotal;
 
     public Item(){
 
-        this.itemName = "";
-        this.quantity = 0.0;
-        this.unitValue = 0.0;
-        this.subTotal = 0.0;
+    }
+
+    public Item(int id,String itemName,String unit, double unit_value, double quantity){
+
+        this.id = id;
+        this.itemName = itemName;
+        this.unit = unit;
+        this.unitValue = unit_value;
+        this.quantity = quantity;
+
 
     }
 
-    public Item(String name,Double quantity, double unit_value, double subtot,int itemNumber){
-        this.id=itemNumber;
+
+
+    public Item(String name,String unit, double unit_value, double subtot,int itemNumber){
+
         this.itemName = name;
-        this.quantity = quantity;
+        this.unit = unit;
         this.unitValue = unit_value;
-        this.subTotal = subtot;
+
 
     }
 

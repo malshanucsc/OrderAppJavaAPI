@@ -2,18 +2,17 @@ package com.sysco.order.model;
 
 import lombok.Getter;
 import lombok.Setter;
-//getters and setters are automatically generated at compile time using lombok
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
+
+//getters and setters are automatically generated at compile time using lombok
 
 @Getter
 @Setter
 public class OrderData {
 
-    @Id
-    private String id;
 
+    private int id;
     private String orderName;
     private String customerName;
     private double grandTotal;
