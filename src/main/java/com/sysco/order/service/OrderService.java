@@ -1,7 +1,7 @@
 package com.sysco.order.service;
 
 import com.sysco.order.dao.OrderDetailDao;
-import com.sysco.order.exception.EmptyOrdertException;
+import com.sysco.order.exception.EmptyOrderException;
 import com.sysco.order.exception.OrderCreationException;
 import com.sysco.order.model.OrderData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,8 @@ public class OrderService {
         try{
             List<OrderData> allOrders = orderDetailDao.getAllOrders();
             return ResponseEntity.status(200).body(allOrders);
-        }catch (EmptyOrdertException eoe){
-            return  ResponseEntity.status(200).body(eoe.getMessage());
+        }catch (EmptyOrderException eoe){
+            return  ResponseEntity.status(500).body(eoe.getMessage());
         }
     }
 
@@ -29,7 +29,7 @@ public class OrderService {
         try{
             OrderData singleOrder = orderDetailDao.getSingleOrder(id);
             return ResponseEntity.status(200).body(singleOrder);
-        }catch(EmptyOrdertException eoe) {
+        }catch(EmptyOrderException eoe) {
             return ResponseEntity.status(404).body(eoe.getMessage());
         }
     }
@@ -47,7 +47,7 @@ public class OrderService {
         try{
             orderDetailDao.deleteOrder(id);
             return ResponseEntity.status(201).body("order_deleted_successfully");
-        }catch (EmptyOrdertException eoe){
+        }catch (EmptyOrderException eoe){
             return  ResponseEntity.status(500).body(eoe.getMessage());
         }
     }

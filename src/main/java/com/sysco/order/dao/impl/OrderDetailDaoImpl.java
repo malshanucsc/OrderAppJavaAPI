@@ -2,7 +2,7 @@ package com.sysco.order.dao.impl;
 
 import com.mysql.jdbc.Statement;
 import com.sysco.order.dao.OrderDetailDao;
-import com.sysco.order.exception.EmptyOrdertException;
+import com.sysco.order.exception.EmptyOrderException;
 import com.sysco.order.exception.OrderCreationException;
 import com.sysco.order.model.Item;
 import com.sysco.order.model.OrderData;
@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,19 +33,22 @@ public class OrderDetailDaoImpl implements OrderDetailDao {
         try {
             return jdbcTemplate.query(query, new OrderDataRowMapper());
         } catch (Exception e) {
-            throw new EmptyOrdertException("no orders",e);
+            throw new EmptyOrderException("ServerError",e);
         }
     }
 
     @Override
     public OrderData getSingleOrder(String id) {
-        String query = "SELECT * FROM order_item INNER JOIN item ON order_item.item_id = item.id WHERE order_item.order_id = ? ";
+        String query_for_order = "SELECT * order_table WHERE id = ? ";
+
+        String query_for_items = "SELECT * FROM order_item INNER JOIN item ON order_item.item_id = item.id WHERE order_item.order_id = ? ";
         try {
+            jdbcTemplate.queryForObject(query_for_order,new Object[] { id },new OrderDataRowMapper());
             OrderData orderData = new OrderData();
             List<Item> item_set = new ArrayList<>();
             orderData.setId(Integer.parseInt(id));
 
-            jdbcTemplate.query(query, new ResultSetExtractor<List>() {
+            jdbcTemplate.query(query_for_items, new ResultSetExtractor<List>() {
                 public List extractData(ResultSet resultSetObj) throws SQLException, DataAccessException {
                     while (resultSetObj.next()) {
                         item_set.add(new Item(resultSetObj.getInt("item_id"), resultSetObj.getString("name"), resultSetObj.getString("unit"), resultSetObj.getDouble("transaction_unit_value"),resultSetObj.getDouble("no_units")));
@@ -55,7 +59,7 @@ public class OrderDetailDaoImpl implements OrderDetailDao {
             orderData.setItemsList(item_set);
             return orderData;
         } catch (Exception e) {
-            throw new EmptyOrdertException("order not available",e);
+            throw new EmptyOrderException("order not available",e);
         }
 
     }
@@ -108,7 +112,7 @@ public class OrderDetailDaoImpl implements OrderDetailDao {
             jdbcTemplate.update(delete_order_query, id);
             return true;
         } catch (Exception e) {
-            throw new EmptyOrdertException("order cannot found or server error",e);
+            throw new EmptyOrderException("order cannot found or server error",e);
         }
     }
 
