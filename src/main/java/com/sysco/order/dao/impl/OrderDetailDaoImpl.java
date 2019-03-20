@@ -7,7 +7,6 @@ import com.sysco.order.exception.OrderCreationException;
 import com.sysco.order.model.Item;
 import com.sysco.order.model.OrderData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -39,22 +38,21 @@ public class OrderDetailDaoImpl implements OrderDetailDao {
 
     @Override
     public OrderData getSingleOrder(String id) {
+        System.out.println(id.getClass());
         String query_for_order = "SELECT * order_table WHERE id = ? ";
 
         String query_for_items = "SELECT * FROM order_item INNER JOIN item ON order_item.item_id = item.id WHERE order_item.order_id = ? ";
         try {
-            jdbcTemplate.queryForObject(query_for_order,new Object[] { id },new OrderDataRowMapper());
-            OrderData orderData = new OrderData();
+            OrderData orderData = jdbcTemplate.queryForObject(query_for_order,new Object[] {Integer.parseInt(id) },new OrderDataRowMapper());
+
             List<Item> item_set = new ArrayList<>();
             orderData.setId(Integer.parseInt(id));
 
-            jdbcTemplate.query(query_for_items, new ResultSetExtractor<List>() {
-                public List extractData(ResultSet resultSetObj) throws SQLException, DataAccessException {
-                    while (resultSetObj.next()) {
-                        item_set.add(new Item(resultSetObj.getInt("item_id"), resultSetObj.getString("name"), resultSetObj.getString("unit"), resultSetObj.getDouble("transaction_unit_value"),resultSetObj.getDouble("no_units")));
-                    }
-                    return item_set;
+            jdbcTemplate.query(query_for_items, (ResultSetExtractor<List>) resultSetObj -> {
+                while (resultSetObj.next()) {
+                    item_set.add(new Item(resultSetObj.getInt("item_id"), resultSetObj.getString("name"), resultSetObj.getString("unit"), resultSetObj.getDouble("transaction_unit_value"),resultSetObj.getDouble("no_units")));
                 }
+                return item_set;
             },id);
             orderData.setItemsList(item_set);
             return orderData;
