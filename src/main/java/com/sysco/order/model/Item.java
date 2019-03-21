@@ -3,7 +3,10 @@ package com.sysco.order.model;
 import lombok.Getter;
 import lombok.Setter;
 
-//getters and setters are automatically generated at compile time using lombok
+/**
+ * holds item details in Item
+ * getters and setters are automatically generated at compile time using lombok
+ */
 @Getter
 @Setter
 public class Item {

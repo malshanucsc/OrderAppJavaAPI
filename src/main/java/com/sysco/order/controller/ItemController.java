@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Read operation on items
+ * @author mwan5534 on 3/21/19
+ *
+ */
 @RestController
 @Api(value = "Item Rest End Points", description = "Shows the item info")
 public class ItemController {
@@ -16,14 +21,21 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    //retreiving all items
+    /**
+     * retreiving all items
+     * @return ResponseEntity Item Array
+     */
     @ApiOperation(value="Returns all items")
     @GetMapping("/items")
     public ResponseEntity items(){
         return itemService.getAllItems();
     }
 
-    //retrieve single item
+    /**
+     * retrieve single item
+     * @param id
+     * @return ResponseEntity Item
+     */
     @ApiOperation(value="Returns an item when id given")
     @GetMapping("/items/{id}")
     public ResponseEntity item(@PathVariable String id){

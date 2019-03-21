@@ -19,6 +19,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object implementation for OrderData entity
+ *
+ * @author mwan5534 on 3/21/19
+ */
 @Repository("OrderDetailDao")
 public class OrderDetailDaoImpl implements OrderDetailDao {
 
@@ -38,13 +43,12 @@ public class OrderDetailDaoImpl implements OrderDetailDao {
 
     @Override
     public OrderData getSingleOrder(String id) {
-        System.out.println(id.getClass());
         String query_for_order = "SELECT * order_table WHERE id = ? ";
 
         String query_for_items = "SELECT * FROM order_item INNER JOIN item ON order_item.item_id = item.id WHERE order_item.order_id = ? ";
         try {
-            OrderData orderData = jdbcTemplate.queryForObject(query_for_order,new Object[] {Integer.parseInt(id) },new OrderDataRowMapper());
-
+            //OrderData orderData = jdbcTemplate.queryForObject(query_for_order,new Object[] {Integer.parseInt(id) },new OrderDataRowMapper());
+            OrderData orderData = new OrderData();
             List<Item> item_set = new ArrayList<>();
             orderData.setId(Integer.parseInt(id));
 

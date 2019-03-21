@@ -11,6 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Data Access Object implementation for Item entity
+ *
+ * @author mwan5534 on 3/21/19
+ */
 @Repository("ItemDetailDao")
 public class ItemDetailDaoImpl implements ItemDetailDao {
 

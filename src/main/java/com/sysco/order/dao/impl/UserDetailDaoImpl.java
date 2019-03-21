@@ -14,6 +14,11 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Data Access Object implementation for User entity
+ *
+ * @author mwan5534 on 3/21/19
+ */
 @Repository("UserDetailDao")
 public class UserDetailDaoImpl implements UserDetailDao {
 

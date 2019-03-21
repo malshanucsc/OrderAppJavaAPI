@@ -5,7 +5,10 @@ import lombok.Setter;
 
 import java.util.List;
 
-//getters and setters are automatically generated at compile time using lombok
+/**
+ * holds order detail in OrderData
+ * getters and setters are automatically generated at compile time using lombok
+ */
 
 @Getter
 @Setter

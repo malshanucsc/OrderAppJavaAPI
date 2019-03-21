@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * CR operations on user
+ * @author mwan5534 on 3/21/19
+ *
+ */
 @RestController
 @Api(value = "User Rest End Points", description = "Shows the user info")
 public class UserController {
@@ -19,14 +24,25 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //logging functionality
+
+    /**
+     *Logging functionality when correct credentials given
+     * @param LogInUser
+     * @return ResponseEntity
+     */
     @ApiOperation(value="Returns user data when credentials are valid")
     @PostMapping(value="/users/login")
     public ResponseEntity logIn(HttpServletResponse httpServletResponse, @RequestBody TempUser LogInUser){
         return userService.logIn(httpServletResponse,LogInUser);
     }
 
-    //register
+
+
+    /**
+     *Register User functionality
+     * @param registerUser
+     * @return ResponseEntity
+     */
     @ApiOperation(value="Returns Success when registering user")
     @PostMapping("users/register")
     public ResponseEntity createUser(@RequestBody User registerUser){
